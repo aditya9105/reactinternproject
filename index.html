@@ -124,17 +124,53 @@
         <div className="container-fluid">
           <div className="row">
             {/* Left Form Box */}
-            <div className="col-md-3 border p-3">
-              <h5 className="mb-3">Enter Details</h5>
-              <input className="form-control mb-3" name="name" placeholder="Name" onChange={handleChange} />
-              <input className="form-control mb-3" name="lastName" placeholder="Last Name" onChange={handleChange} />
-              <input className="form-control mb-3" name="email" placeholder="Email" onChange={handleChange} />
-              <input className="form-control mb-3" name="mobile" placeholder="Mobile Number" onChange={handleChange} />
-              <input className="form-control mb-3" name="company" placeholder="Company" onChange={handleChange} />
-              <input className="form-control mb-3" name="dob" placeholder="Date of Birth" onChange={handleChange} />
-              <input className="form-control mb-3" name="gender" placeholder="Gender" onChange={handleChange} />
-              <button className="btn btn-primary btn-block mt-2">Save</button>
-            </div>
+        <div className="col-md-3 border p-3">
+  <h5 className="mb-3">Enter Details</h5>
+
+  <input className="form-control mb-3" name="name" placeholder="First Name" onChange={handleChange} />
+
+  <input className="form-control mb-3" name="lastName" placeholder="Last Name" onChange={handleChange} />
+
+  <input className="form-control mb-3" name="email" placeholder="Email" onChange={handleChange} />
+
+  <input
+    className="form-control mb-3"
+    name="mobile"
+    placeholder="Mobile Number"
+    maxLength="10"
+    onChange={(e) => {
+      const value = e.target.value;
+      if (/^\d{0,10}$/.test(value)) {
+        setForm({ ...form, mobile: value });
+      }
+    }}
+    value={form.mobile}
+  />
+
+  <input className="form-control mb-3" name="company" placeholder="Company" onChange={handleChange} />
+
+  <input
+    type="date"
+    className="form-control mb-3"
+    name="dob"
+    onChange={handleChange}
+  />
+
+  <select
+    className="form-control mb-3"
+    name="gender"
+    onChange={handleChange}
+    value={form.gender}
+  >
+    <option value="">Select Gender</option>
+    <option value="Male">Male</option>
+    <option value="Female">Female</option>
+    <option value="Other">Other</option>
+  </select>
+
+  <button className="btn btn-primary btn-block mt-2">Save</button>
+</div>
+
 
             {/* Right Side */}
             <div className="col-md-9">
