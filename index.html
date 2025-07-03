@@ -92,6 +92,24 @@
       };
 
       const generatePDF = () => {
+        
+        if (!form.name || !form.lastName || !form.email || !form.mobile || !form.company || !form.dob || !form.gender || !selectedImage) {
+          alert("Please fill in all fields and select an image before generating the PDF.");
+          return;
+        }
+        
+        const userData = {
+          ...form,
+          selectedImage,
+          timestamp: Date.now()
+        };
+        
+        if (window.saveToFirebase) {
+          window.saveToFirebase(userData);
+        } else {
+          console.warn("⚠️ Firebase not initialized.");
+        }
+
         const element = document.getElementById("preview");
         html2pdf().from(element).save("profile.pdf");
       };
@@ -217,6 +235,27 @@
     }
 
     ReactDOM.render(<App />, document.getElementById("root"));
+  </script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+  
+    const firebaseConfig = {
+      apiKey: "...",
+      // ...
+      storageBucket: "publicis-project-349eb.appspot.com", // ✅ Fixed URL
+      databaseURL: "https://publicis-project-349eb-default-rtdb.firebaseio.com"
+    };
+  
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+  
+    window.saveToFirebase = function(userData) {
+      const newRef = push(ref(database, "formResponses"));
+      set(newRef, userData)
+        .then(() => console.log("✅ Data saved to Firebase"))
+        .catch((err) => console.error("❌ Firebase Error:", err));
+    };
   </script>
 </body>
 </html>
