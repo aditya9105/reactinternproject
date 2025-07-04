@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Database Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+</head>
+<body class="p-4">
+  <h2 class="mb-4">Database Page</h2>
+
+  <table class="table table-bordered table-striped" id="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Mobile</th>
+        <th>Company</th>
+        <th>DOB</th>
+        <th>Gender</th>
+        <th>Image</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Data rows will be added dynamically -->
+    </tbody>
+  </table>
+
+  <!-- ✅ Shared Firebase logic -->
+  <script type="module" src="script.js"></script>
+
+  <!-- ✅ Dynamic population -->
+  <script type="module">
+    window.listenToFirebase((data) => {
+      const tableBody = document.querySelector("#data-table tbody");
+      tableBody.innerHTML = "";
+
+      Object.entries(data).forEach(([key, entry]) => {
+        const row = document.createElement("tr");
+
+        row.innerHTML = `
+          <td>${entry.name || ""}</td>
+          <td>${entry.lastName || ""}</td>
+          <td>${entry.email || ""}</td>
+          <td>${entry.mobile || ""}</td>
+          <td>${entry.company || ""}</td>
+          <td>${entry.dob || ""}</td>
+          <td>${entry.gender || ""}</td>
+          <td>${entry.selectedImage ? `<img src="${entry.selectedImage}" width="60" />` : ""}</td>
+          <td>${new Date(entry.timestamp).toLocaleString()}</td>
+        `;
+
+        tableBody.appendChild(row);
+      });
+    });
+  </script>
+</body>
+</html>
