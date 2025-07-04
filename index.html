@@ -81,6 +81,7 @@
       });
 
       const [selectedImage, setSelectedImage] = useState("");
+      const [isSaved, setIsSaved] = useState(false); // ✅ NEW: Tracks whether form is saved
       const carouselRef = useRef(null);
 
       const handleChange = (e) => {
@@ -91,30 +92,45 @@
         setSelectedImage(src);
       };
 
+      const validateForm = () => {
+        return form.name && form.lastName && form.email && form.mobile &&
+               form.company && form.dob && form.gender && selectedImage;
+      };
+
+      const saveData = () => {
+        if (!validateForm()) {
+          alert("⚠️ Please fill all the fields and select an image before saving.");
+          return;
+        }
+  
+        const userData = {
+          ...form,
+          selectedImage,
+          timestamp: Date.now()
+        };
+  
+        if (window.saveToFirebase) {
+          window.saveToFirebase(userData);
+          alert("✅ Data saved successfully!");
+          setIsSaved(true); // ✅ Mark as saved
+        } else {
+          console.warn("⚠️ Firebase not initialized.");
+        }
+      };
+      
       const generatePDF = () => {
 
+        if (!validateForm()) {
+          alert("⚠️ Please fill in all fields and select an image before generating PDF.");
+          return;
+        }
+  
+        if (!isSaved) {
+          alert("⚠️ Please save the form first before generating the PDF.");
+          return;
+        }
         
-        // ✅ STEP 1: VALIDATION — make sure all form fields are filled
-        if (!form.name || !form.lastName || !form.email || !form.mobile || !form.company || !form.dob || !form.gender || !selectedImage) {
-          alert("Please fill in all fields and select an image before generating the PDF.");
-          return;  // if not valid, stop here
-        }
-
-        // ✅ STEP 2: Prepare the data to be saved to Firebase
-        const userData = {
-          ...form,             // all form fields (name, email, etc.)
-          selectedImage,       // the chosen image
-          timestamp: Date.now()  // current time, useful for sorting entries later
-        };
-
-        // ✅ STEP 3: Save the data to Firebase, if Firebase is available
-        if (window.saveToFirebase) {
-          window.saveToFirebase(userData); // 🔥 THIS IS THE REAL-TIME UPDATE PART
-        } else {
-          console.warn("⚠️ Firebase not initialized.");  // fallback
-        }
-
-        // ✅ STEP 4: Generate the PDF from the preview
+        //Generate the PDF from the preview
         const element = document.getElementById("preview");
         html2pdf().from(element).save("profile.pdf");
       };
@@ -190,7 +206,7 @@
     <option value="Other">Other</option>
   </select>
 
-  <button className="btn btn-primary btn-block mt-2">Save</button>
+  <button className="btn btn-primary btn-block mt-2" onClick={saveData}>Save</button>
 </div>
 
 
