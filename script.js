@@ -1,10 +1,10 @@
     // ✅ Firebase Initialization + Data Save Function
     
-    // ✅ 1. Import Firebase Modules
+    // ✅ Import Firebase Modules
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import { getDatabase, ref, set, push } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
-    // ✅ 2. Firebase Configuration Object
+    // ✅ Firebase Configuration Object
     const firebaseConfig = {
       apiKey: "AIzaSyCIdvxQ5IUI9tzTHkgXHC3n6ARmyfkRuHI",
       authDomain: "publicis-project-349eb.firebaseapp.com",
@@ -16,16 +16,23 @@
       databaseURL: "https://publicis-project-349eb-default-rtdb.firebaseio.com"
     };
 
-    // ✅ 3. Initialize Firebase App
+    // ✅ Initialize Firebase App
     const app = initializeApp(firebaseConfig);
-
-    // ✅ 4. Get Realtime Database Reference
     const database = getDatabase(app);
 
-    // ✅ 5. Define a Global Save Function
+    // ✅ 1. 'Save' Function for Form Page
     window.saveToFirebase = function(userData) {
       const newRef = push(ref(database, "formResponses")); // creates a unique key
       set(newRef, userData)  // stores your form data under that key
         .then(() => console.log("✅ Data saved to Firebase"))
         .catch((err) => console.error("❌ Firebase Error:", err));
+    };
+
+    // ✅ 2. Realtime Listener for Database Page
+    window.listenToFirebase = function (callback) {
+      const dbRef = ref(database, "formResponses");
+      onValue(dbRef, (snapshot) => {
+        const data = snapshot.val();
+        callback(data || {});
+      });
     };
