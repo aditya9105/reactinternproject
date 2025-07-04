@@ -92,24 +92,29 @@
       };
 
       const generatePDF = () => {
+
         
+        // ✅ STEP 1: VALIDATION — make sure all form fields are filled
         if (!form.name || !form.lastName || !form.email || !form.mobile || !form.company || !form.dob || !form.gender || !selectedImage) {
           alert("Please fill in all fields and select an image before generating the PDF.");
           return;
         }
-        
+
+        // ✅ STEP 2: Prepare the data to be saved to Firebase
         const userData = {
           ...form,
           selectedImage,
           timestamp: Date.now()
         };
-        
+
+        // ✅ STEP 3: Save the data to Firebase, if Firebase is available
         if (window.saveToFirebase) {
           window.saveToFirebase(userData);
         } else {
           console.warn("⚠️ Firebase not initialized.");
         }
 
+        // ✅ STEP 4: Generate the PDF from the preview
         const element = document.getElementById("preview");
         html2pdf().from(element).save("profile.pdf");
       };
