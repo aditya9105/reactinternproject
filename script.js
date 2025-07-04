@@ -24,8 +24,8 @@
 
     // ✅ 5. Define a Global Save Function
     window.saveToFirebase = function(userData) {
-      const newRef = push(ref(database, "formResponses"));
-      set(newRef, userData)
+      const newRef = push(ref(database, "formResponses")); // creates a unique key
+      set(newRef, userData)  // stores your form data under that key
         .then(() => console.log("✅ Data saved to Firebase"))
         .catch((err) => console.error("❌ Firebase Error:", err));
     };
